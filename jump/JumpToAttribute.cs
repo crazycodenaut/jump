@@ -2,14 +2,16 @@
 
 namespace JumpTool
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class JumpToAttribute : Attribute
     {
-        public string TargetMethodName { get; set; }
+        public string TargetName { get; set; }
+        public string ShortDescription { get; set; }
 
-        public JumpToAttribute(string targetName)
+        public JumpToAttribute(string targetName, string shortDescription)
         {
-            TargetMethodName = targetName;
+            TargetName = targetName;
+            ShortDescription = shortDescription;
         }
     }
 }

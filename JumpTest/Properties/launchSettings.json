@@ -2,7 +2,7 @@
   "profiles": {
     "JumpTest": {
       "commandName": "Project",
-      "commandLineArgs": "ep2 12 42"
+      "commandLineArgs": "epx"
     }
   }
 }

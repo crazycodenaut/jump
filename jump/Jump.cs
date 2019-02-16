@@ -7,7 +7,9 @@ namespace JumpTool
 {
     public static class Jump
     {
+        static Type _jumpType;
         static Dictionary<string, MethodInfo> _consoleEntryPoints;
+        static Dictionary<string, JumpToAttribute> _jumpAttributes;
 
         private static void Log(string msg)
         {
@@ -17,6 +19,7 @@ namespace JumpTool
         private static void MapJumpTargets(Type targetType)
         {
             Dictionary<string, MethodInfo> jumpTargets = new Dictionary<string, MethodInfo>();
+            Dictionary<string, JumpToAttribute> attrTargets = new Dictionary<string, JumpToAttribute>();
 
             var targetMethods = targetType.GetMethods()
                                             .Where(method => method.GetCustomAttributes<JumpToAttribute>()
@@ -26,12 +29,9 @@ namespace JumpTool
 
             foreach (var method in targetMethods)
             {
-                foreach (var attr in method.CustomAttributes)
+                foreach (var attr in method.GetCustomAttributes<JumpToAttribute>())
                 {
-                    var key = attr.ConstructorArguments
-                        .First().Value
-                        .ToString()
-                        .ToLowerInvariant();
+                    var key = attr.TargetName.ToLowerInvariant();
 
                     if(jumpTargets.ContainsKey(key))
                     {
@@ -40,6 +40,8 @@ namespace JumpTool
                     else
                     {
                         jumpTargets.Add(key, method);
+                        attrTargets.Add(key, attr);
+
                     }
                 }
             }
@@ -48,11 +50,22 @@ namespace JumpTool
             Log($"Jump :: Possible Options: \n\t- { string.Join("\n\t- ", jumpTargets.Keys)}");
 
             Jump._consoleEntryPoints = jumpTargets; // I precede with Jump to be explicit.
+            Jump._jumpAttributes = attrTargets;
         }
 
         public static void PrintHelp()
         {
-            Console.WriteLine($"TODO: Print the help screen.");
+            Console.WriteLine(new string('-', 50));
+            Console.WriteLine($"The following options are available to jump to: ");
+            Console.WriteLine(new string('-', 50));
+
+            foreach (var ep in Jump._consoleEntryPoints)
+            {
+                Console.WriteLine($"\t{ep.Key} - {ep.Value.ToString().PadRight(30, ' ')}\t{_jumpAttributes[ep.Key].ShortDescription}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine($"");
         }
         
         private static void ExecuteJumpTarget(string[] args, Type targetType)
@@ -64,10 +77,10 @@ namespace JumpTool
                     break;
                 case 1:
                     if (Jump._consoleEntryPoints
-                                .ContainsKey(args[0]))
+                            .ContainsKey(args[0]))
                     {
                         Jump._consoleEntryPoints[args[0]]
-                                .Invoke(null, null);
+                            .Invoke(null, null);
                     }
                     else
                     {
@@ -75,9 +88,9 @@ namespace JumpTool
                         Console.WriteLine($"Could not find a matching jump target with name: {targetType.Name}");
                     }
                     break;
-                default: // 1+
+                default: // 1+ args
                     if (Jump._consoleEntryPoints
-                                .ContainsKey(args[0]))
+                            .ContainsKey(args[0]))
                     {
                         var targetMethodInfo        = Jump._consoleEntryPoints[args[0]];
                         var targetMethodParameters  = targetMethodInfo.GetParameters();
@@ -107,7 +120,7 @@ namespace JumpTool
                         }
                         
                         Jump._consoleEntryPoints[args[0]]
-                                .Invoke(null, convertedArgs); // this works okay if the parameters are strings; I need a real time type converter.
+                            .Invoke(null, convertedArgs);
                     }
                     else
                     {
@@ -120,6 +133,8 @@ namespace JumpTool
 
         public static void Start(string[] args, Type targetType)
         {
+            Jump._jumpType = targetType;
+
             MapJumpTargets(targetType);
             ExecuteJumpTarget(args, targetType);
         }

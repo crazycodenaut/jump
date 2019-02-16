@@ -5,18 +5,16 @@ namespace JumpTest
 {
     class Program
     {
-        [JumpTo("Entrypoint2")]
-        [JumpTo("Ep2")]
-        public static void Ep2(int testA, double flex)
+        [JumpTo("Entrypoint2", "A second entry point.")]
+        public static void Ep2(int paramA, double paramB)
         {
-            Console.WriteLine($"Episode 2: {testA}");
+            Console.WriteLine($"Episode 2: {paramA} {paramB}");
         }
 
-        [JumpTo("Entrypoint1")]
-        [JumpTo("Ep1")]
-        public static void Entrypoint1()
+        [JumpTo("Entrypoint1", "An entry point.")]
+        public static void Entrypoint1(string ok)
         {
-            Console.WriteLine("Episode 1");
+            Console.WriteLine($"Episode 1");
         }
 
         static void Main(string[] args)
