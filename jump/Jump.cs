@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace JumpTool
 {
+    using static Console;
+    using static Jump;
+
     public static class Jump
     {
         static Type _jumpType;
@@ -13,7 +16,7 @@ namespace JumpTool
 
         private static void Log(string msg)
         {
-            Console.WriteLine(msg);
+            WriteLine(msg);
         }
 
         private static void MapJumpTargets(Type targetType)
@@ -49,23 +52,23 @@ namespace JumpTool
             Log($"Jump :: Target Type: { targetType.FullName }");
             Log($"Jump :: Possible Options: \n\t- { string.Join("\n\t- ", jumpTargets.Keys)}");
 
-            Jump._consoleEntryPoints = jumpTargets; // I precede with Jump to be explicit.
-            Jump._jumpAttributes = attrTargets;
+            _consoleEntryPoints = jumpTargets; // I precede with Jump to be explicit.
+            _jumpAttributes = attrTargets;
         }
 
         public static void PrintHelp()
         {
-            Console.WriteLine(new string('-', 50));
-            Console.WriteLine($"The following options are available to jump to: ");
-            Console.WriteLine(new string('-', 50));
+            WriteLine(new string('-', 50));
+            WriteLine($"The following options are available to jump to: ");
+            WriteLine(new string('-', 50));
 
             foreach (var ep in Jump._consoleEntryPoints)
             {
-                Console.WriteLine($"\t{ep.Key} - {ep.Value.ToString().PadRight(30, ' ')}\t{_jumpAttributes[ep.Key].ShortDescription}");
-                Console.WriteLine();
+                WriteLine($"\t{ep.Key} - {ep.Value.ToString().PadRight(30, ' ')}\t{_jumpAttributes[ep.Key].ShortDescription}");
+                WriteLine();
             }
 
-            Console.WriteLine($"");
+            WriteLine($"");
         }
         
         private static void ExecuteJumpTarget(string[] args, Type targetType)
@@ -76,23 +79,20 @@ namespace JumpTool
                     PrintHelp();
                     break;
                 case 1:
-                    if (Jump._consoleEntryPoints
-                            .ContainsKey(args[0]))
+                    if (_consoleEntryPoints.ContainsKey(args[0]))
                     {
-                        Jump._consoleEntryPoints[args[0]]
-                            .Invoke(null, null);
+                        _consoleEntryPoints[args[0]].Invoke(null, null);
                     }
                     else
                     {
                         PrintHelp();
-                        Console.WriteLine($"Could not find a matching jump target with name: {targetType.Name}");
+                        WriteLine($"Could not find a matching jump target with name: {targetType.Name}");
                     }
                     break;
                 default: // 1+ args
-                    if (Jump._consoleEntryPoints
-                            .ContainsKey(args[0]))
+                    if (_consoleEntryPoints.ContainsKey(args[0]))
                     {
-                        var targetMethodInfo        = Jump._consoleEntryPoints[args[0]];
+                        var targetMethodInfo        = _consoleEntryPoints[args[0]];
                         var targetMethodParameters  = targetMethodInfo.GetParameters();
                         var targetArgs              = args.Skip(1).ToArray();
                         var targetParameterCount    = targetMethodParameters.Count();
@@ -119,13 +119,12 @@ namespace JumpTool
                             }
                         }
                         
-                        Jump._consoleEntryPoints[args[0]]
-                            .Invoke(null, convertedArgs);
+                        _consoleEntryPoints[args[0]].Invoke(null, convertedArgs);
                     }
                     else
                     {
                         PrintHelp();
-                        Console.WriteLine($"Could not find a matching jump target with name: {targetType.Name}");
+                        WriteLine($"Could not find a matching jump target with name: {targetType.Name}");
                     }
                     break;
             }
@@ -133,7 +132,7 @@ namespace JumpTool
 
         public static void Start(string[] args, Type targetType)
         {
-            Jump._jumpType = targetType;
+            _jumpType = targetType;
 
             MapJumpTargets(targetType);
             ExecuteJumpTarget(args, targetType);
