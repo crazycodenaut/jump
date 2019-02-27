@@ -6,11 +6,9 @@ using System.Reflection;
 namespace JumpTool
 {
     using static Console;
-    using static Jump;
 
     public static class Jump
     {
-        static Type _jumpType;
         static Dictionary<string, MethodInfo> _consoleEntryPoints;
         static Dictionary<string, JumpToAttribute> _jumpAttributes;
 
@@ -44,7 +42,6 @@ namespace JumpTool
                     {
                         jumpTargets.Add(key, method);
                         attrTargets.Add(key, attr);
-
                     }
                 }
             }
@@ -76,11 +73,13 @@ namespace JumpTool
             switch (args.Length)
             {
                 case 0:
+                    // if no entry point is specified, then show the help screen.
                     PrintHelp();
                     break;
                 case 1:
                     if (_consoleEntryPoints.ContainsKey(args[0]))
                     {
+                        // no arguments; go ahead and invoke the specified entry point.
                         _consoleEntryPoints[args[0]].Invoke(null, null);
                     }
                     else
@@ -119,6 +118,7 @@ namespace JumpTool
                             }
                         }
                         
+                        // invoke the method with our newly converted args.
                         _consoleEntryPoints[args[0]].Invoke(null, convertedArgs);
                     }
                     else
@@ -132,8 +132,6 @@ namespace JumpTool
 
         public static void Start(string[] args, Type targetType)
         {
-            _jumpType = targetType;
-
             MapJumpTargets(targetType);
             ExecuteJumpTarget(args, targetType);
         }
