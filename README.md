@@ -7,4 +7,8 @@ Apply attributes like this:
 [JumpTo("aliasname", "Description goes here")]
 ````
 
-to static methods in your Program class that you'd like to begin executing logic in when the  
+to static methods in your Program class that you'd like to begin executing logic in. Then, when the end-user executes runs your program, like
+
+` YouProgram.exe aliasname arg1 arg2 arg3 ` 
+
+Then it will automatically jump to that location.
