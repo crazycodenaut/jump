@@ -33,7 +33,7 @@ is executed by,
 and will print:
 `Episode 2: 0 0.3`
 
-This example is straightforward but I think there is promise. In order to begin using it there is a single line of code required:
+This example is straightforward but I think there is promise. In order to begin using it there is a single line of code required in your static Main method (or really, whatever method you have declared as your entry point).
 
 ```C# 
 Jump.Start(args, typeof(Program));
