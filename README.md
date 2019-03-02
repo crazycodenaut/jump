@@ -1,4 +1,4 @@
-Very early version. 
+Early conceptual version.
 
 ## How it Works
 Apply attributes like this:
