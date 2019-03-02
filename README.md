@@ -36,7 +36,10 @@ and will print:
 This example is straightforward but I think there is promise. In order to begin using it there is a single line of code required in your static Main method (or really, whatever method you have declared as your entry point).
 
 ```C# 
-Jump.Start(args, typeof(Program));
+static void Main(string[] args)
+{
+    Start(args, typeof(Program));
+}
 ```
 
 In other words, just pass the args and the static class that you're keeping the method attributes in and the API takes care of the rest. 
