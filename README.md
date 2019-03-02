@@ -11,6 +11,6 @@ to static methods in your Program class that you'd like to begin executing logic
 
 ` YouProgram.exe aliasname arg1 arg2 arg3 ` 
 
-Then it will automatically jump to that location.
+Then it will automatically jump to that static method, bind the arguments appropriately, and begin executing.
 
 See the JumpTest code in the repository for additional examples. Keep in mind, however, that this is a conceptual release. 
